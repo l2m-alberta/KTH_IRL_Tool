@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KTH Innovation Readiness Level (IRL)™ Intake &amp; Assessment Tool</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true">IRL</div>
+        <div>
+          <h1 class="site-title">KTH Innovation Readiness Level™</h1>
+          <p class="site-subtitle">Venture Intake &amp; Readiness Assessment</p>
+        </div>
+      </div>
+
+      <div class="header-actions no-print">
+        <nav class="view-switcher" aria-label="Application Views">
+          <button type="button" id="nav-assessment" class="btn btn-secondary btn-sm" aria-current="page">
+            Intake &amp; Assessment
+          </button>
+          <button type="button" id="nav-database" class="btn btn-secondary btn-sm">
+            Submissions Database <span id="db-count-badge" class="nav-count-badge" hidden>0</span>
+          </button>
+        </nav>
+
+        <span class="privacy-pill" title="Submissions are stored securely in the assessment database">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+          </svg>
+          Database Connected
+        </span>
+        <button type="button" id="btn-load-sample" class="btn btn-ghost btn-sm">
+          Preview PDF Sample
+        </button>
+        <button type="button" id="btn-restart-top" class="btn btn-ghost btn-sm">
+          Restart
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="container main-content">
+    <!-- Assessment & Intake View -->
+    <section id="assessment-view" aria-label="Venture Intake and IRL Assessment Form">
+      <!-- Intake Details Card -->
+      <section class="card intake-card" aria-labelledby="intake-heading">
+        <div class="intake-header">
+          <div>
+            <h2 id="intake-heading" class="intake-title">Venture &amp; Contact Intake</h2>
+            <p class="intake-subtitle">
+              Provide your contact and venture information below, then rate all six Innovation Readiness dimensions.
+            </p>
+          </div>
+          <div class="progress-summary" aria-live="polite">
+            <div class="progress-text">
+              <span id="progress-count">0 of 6</span> dimensions rated
+            </div>
+            <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0" id="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="intake-grid">
+          <div class="form-field">
+            <label for="full-name" class="field-label">Name <span class="required-mark" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="full-name"
+              class="text-input"
+              placeholder="e.g., Alex Lindqvist"
+              maxlength="120"
+              required
+              autocomplete="name"
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="email-address" class="field-label">Email Address <span class="required-mark" aria-hidden="true">*</span></label>
+            <input
+              type="email"
+              id="email-address"
+              class="text-input"
+              placeholder="e.g., alex@kth.se"
+              maxlength="160"
+              required
+              autocomplete="email"
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="academic-institution" class="field-label">Academic Institution <span class="required-mark" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="academic-institution"
+              class="text-input"
+              placeholder="e.g., KTH Royal Institute of Technology"
+              maxlength="160"
+              required
+              autocomplete="organization"
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="venture-website" class="field-label">Venture Website <span class="optional-tag">(if there is one)</span></label>
+            <input
+              type="url"
+              id="venture-website"
+              class="text-input"
+              placeholder="https://example.com"
+              maxlength="240"
+              autocomplete="url"
+            >
+          </div>
+
+          <div class="form-field form-field-full">
+            <label for="venture-details" class="field-label">Venture Details <span class="required-mark" aria-hidden="true">*</span></label>
+            <textarea
+              id="venture-details"
+              class="text-input textarea-input"
+              rows="3"
+              placeholder="Briefly describe the venture, innovation, target market, and current stage..."
+              maxlength="2000"
+              required
+            ></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dimension Navigation Tabs / Stepper -->
+      <nav class="dimension-nav" aria-label="Readiness Dimensions">
+        <ul id="dimension-tabs" class="dimension-tabs" role="list"></ul>
+      </nav>
+
+      <!-- Active Dimension Card -->
+      <article id="dimension-card" class="card dimension-card" aria-live="polite">
+        <div class="dimension-header">
+          <div>
+            <div class="dimension-kicker">
+              <span id="dim-acronym-badge" class="acronym-badge">CRL</span>
+              <span id="dim-version" class="version-tag"></span>
+            </div>
+            <h2 id="dim-title" class="dimension-title">Customer Readiness Level</h2>
+            <p id="dim-goal" class="dimension-goal"></p>
+          </div>
+          <div class="dimension-header-actions">
+            <button
+              type="button"
+              id="btn-toggle-compare"
+              class="btn btn-secondary btn-sm"
+              aria-pressed="true"
+            >
+              Compare Adjacent Levels
+            </button>
+            <button
+              type="button"
+              id="btn-toggle-all-levels"
+              class="btn btn-ghost btn-sm"
+              aria-expanded="false"
+              aria-controls="all-levels-panel"
+            >
+              View All 9 Levels
+            </button>
+          </div>
+        </div>
+
+        <div id="dim-definition-note" class="definition-note" hidden></div>
+
+        <!-- Level 1-9 Selector -->
+        <fieldset class="level-selector-fieldset">
+          <legend class="level-selector-legend">
+            Select the level (1–9) that best describes where you are now:
+          </legend>
+          <div id="level-radiogroup" class="level-radiogroup"></div>
+        </fieldset>
+
+        <!-- Selected Level + Adjacent Comparison Area -->
+        <div id="level-details-container" class="level-details-container"></div>
+
+        <!-- Expandable All 9 Levels Overview -->
+        <div id="all-levels-panel" class="all-levels-panel" hidden>
+          <div class="all-levels-header">
+            <h3>All 9 Levels — Quick Reference</h3>
+            <p>Select any level below to choose it for this dimension.</p>
+          </div>
+          <div id="all-levels-list" class="all-levels-list"></div>
+        </div>
+
+        <!-- Validation Banner -->
+        <div id="form-validation-msg" class="validation-banner" role="alert" hidden></div>
+
+        <!-- Dimension Footer Navigation -->
+        <div class="card-footer-nav">
+          <button type="button" id="btn-prev-dim" class="btn btn-secondary">
+            &larr; Previous Dimension
+          </button>
+
+          <div class="footer-right-actions">
+            <button type="button" id="btn-next-dim" class="btn btn-primary">
+              Next Dimension &rarr;
+            </button>
+            <button type="button" id="btn-view-results" class="btn btn-accent">
+              Submit &amp; View Results
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Results View -->
+    <section id="results-view" aria-label="Assessment Results" hidden>
+      <div id="save-confirmation-banner" class="save-banner no-print" hidden></div>
+
+      <div class="results-header-bar">
+        <div>
+          <span class="results-kicker">Assessment Profile</span>
+          <h2 id="results-title" class="results-title">Innovation Readiness Profile</h2>
+          <p id="results-subtitle" class="results-subtitle"></p>
+        </div>
+        <div class="results-actions no-print">
+          <button type="button" id="btn-edit-answers" class="btn btn-secondary">
+            Edit Answers
+          </button>
+          <button type="button" id="btn-view-database-from-results" class="btn btn-secondary">
+            Open Database
+          </button>
+          <button type="button" id="btn-download-png" class="btn btn-secondary">
+            Download Chart (PNG)
+          </button>
+          <button type="button" id="btn-print" class="btn btn-primary">
+            Print / Save PDF
+          </button>
+          <button type="button" id="btn-restart-results" class="btn btn-ghost">
+            New Assessment
+          </button>
+        </div>
+      </div>
+
+      <!-- Submitted Intake Summary Card -->
+      <section id="results-intake-summary" class="card results-intake-card" hidden></section>
+
+      <!-- Radar Chart + Imbalance Insights Grid -->
+      <div class="results-grid">
+        <div class="card chart-card">
+          <div class="card-section-header">
+            <h3>Six-Axis Readiness Radar</h3>
+            <span class="chart-scale-note">Scale 1 (inner) to 9 (outer)</span>
+          </div>
+          <p id="radar-submitted-date" class="card-submitted-date" hidden></p>
+          <div id="radar-chart-wrapper" class="radar-chart-wrapper"></div>
+          <div class="chart-legend" aria-label="Chart marker legend">
+            <span class="legend-item">
+              <span class="legend-symbol legend-strongest" aria-hidden="true"></span>
+              Strongest dimension(s)
+            </span>
+            <span class="legend-item">
+              <span class="legend-symbol legend-weakest" aria-hidden="true"></span>
+              Lowest dimension(s) — priority focus
+            </span>
+            <span class="legend-item">
+              <span class="legend-symbol legend-standard" aria-hidden="true"></span>
+              Other dimensions
+            </span>
+          </div>
+        </div>
+
+        <div class="insights-column">
+          <!-- Balance & Spread Metrics -->
+          <div class="card metrics-card">
+            <h3>Balance &amp; Imbalance Overview</h3>
+            <p id="balance-submitted-date" class="card-submitted-date" hidden></p>
+            <div id="balance-metrics" class="balance-metrics"></div>
+            <div id="dimension-bars" class="dimension-bars" aria-label="Dimension score comparison"></div>
+          </div>
+
+          <!-- Strongest & Weakest Highlights -->
+          <div id="imbalance-cards" class="imbalance-cards"></div>
+        </div>
+      </div>
+
+      <!-- Plain Summary of Selected Levels -->
+      <section class="card summary-section" aria-labelledby="summary-heading">
+        <div class="summary-section-header">
+          <div>
+            <h3 id="summary-heading">Summary of Selected Levels</h3>
+            <p class="summary-section-desc">
+              Your selected readiness level and official KTH IRL criteria for each dimension.
+            </p>
+          </div>
+          <button type="button" id="btn-toggle-all-criteria" class="btn btn-secondary btn-sm no-print" aria-expanded="false">
+            Expand All Criteria
+          </button>
+        </div>
+        <div id="results-summary-list" class="results-summary-list"></div>
+      </section>
+    </section>
+
+    <!-- Submissions Database View -->
+    <section id="database-view" aria-label="Submissions Database" hidden>
+      <div class="results-header-bar">
+        <div>
+          <span class="results-kicker">Saved Records</span>
+          <h2 class="results-title">Submissions Database</h2>
+          <p class="results-subtitle">
+            Browse, search, inspect, or export all submitted intake forms and IRL readiness profiles.
+          </p>
+        </div>
+        <div class="results-actions no-print">
+          <button type="button" id="btn-export-csv" class="btn btn-secondary" hidden>
+            Export CSV
+          </button>
+          <button type="button" id="btn-lock-db" class="btn btn-ghost" hidden>
+            Lock Database
+          </button>
+          <button type="button" id="btn-new-from-db" class="btn btn-primary">
+            + New Intake &amp; Assessment
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Password Gate -->
+      <section id="db-lock-screen" class="card db-lock-card" aria-labelledby="db-lock-heading">
+        <h3 id="db-lock-heading" class="db-lock-title">Admin Access Required</h3>
+        <p class="db-lock-desc">
+          Enter the admin password to view, search, export, or manage submitted venture assessments.
+        </p>
+        <form id="db-unlock-form" class="db-unlock-form">
+          <label for="db-admin-password" class="sr-only">Admin Password</label>
+          <input
+            type="password"
+            id="db-admin-password"
+            class="text-input"
+            placeholder="Enter admin password"
+            autocomplete="current-password"
+            required
+          >
+          <button type="submit" id="btn-unlock-db" class="btn btn-primary">
+            Unlock Database
+          </button>
+        </form>
+        <div id="db-auth-error" class="validation-banner" role="alert" hidden></div>
+      </section>
+
+      <div id="db-unlocked-panel" hidden>
+        <div id="db-stats-strip" class="db-stats-strip"></div>
+
+        <section class="card db-table-card">
+          <div class="db-toolbar">
+            <div class="db-search-wrap">
+              <label for="db-search" class="sr-only">Search submissions</label>
+              <input
+                type="search"
+                id="db-search"
+                class="text-input"
+                placeholder="Search by name, email, institution, or venture details..."
+              >
+            </div>
+            <button type="button" id="btn-refresh-db" class="btn btn-secondary btn-sm">
+              Refresh
+            </button>
+          </div>
+
+          <div id="db-content" class="db-content"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>
+        Based on the <strong>KTH Innovation Readiness Level™</strong> framework
+        (&copy; KTH Innovation, <a href="https://kthinnovationreadinesslevel.com" target="_blank" rel="noopener noreferrer">kthinnovationreadinesslevel.com</a>, CC BY-NC-SA).
+      </p>
+      <p class="footer-privacy">
+        Submissions are stored securely in the assessment database.
+      </p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
